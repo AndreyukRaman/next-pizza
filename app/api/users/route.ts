@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import {prisma} from "@/prisma/prisma-client";
 
+
 export async function GET(){
 
     const users = await prisma.user.findMany()
@@ -12,8 +13,8 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
 
         // Проверяем обязательные поля
-        const { fullName, password, email } = body;
-        if (!fullName || !password || !email) {
+        const { fullName, password, email} = body;
+        if (!fullName || !password || !email ) {
             return NextResponse.json(
                 { error: "fullName, password и email обязательны" },
                 { status: 400 }
