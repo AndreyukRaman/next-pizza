@@ -12,10 +12,10 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
 
         // Проверяем обязательные поля
-        const { fullName, phone, email } = body;
-        if (!fullName || !phone || !email) {
+        const { fullName, password, email } = body;
+        if (!fullName || !password || !email) {
             return NextResponse.json(
-                { error: "fullName, phone и email обязательны" },
+                { error: "fullName, password и email обязательны" },
                 { status: 400 }
             );
         }
@@ -24,9 +24,8 @@ export async function POST(req: NextRequest) {
         const user = await prisma.user.create({
             data: {
                 fullName,
-                phone,
+                password,
                 email,
-                role: body.role || undefined,
             },
         });
 
