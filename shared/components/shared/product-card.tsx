@@ -1,8 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Title } from '@/components/shared/title';
-import { Button } from '@/components/ui/button';
+import { Title } from '@/shared/components/shared/title';
+import { Button } from '@/shared/components/ui/button';
 import { Plus } from 'lucide-react';
 
 interface Props {

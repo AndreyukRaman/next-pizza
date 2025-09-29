@@ -1,26 +1,17 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
-import { ProductImage } from '@/components/shared/product-image';
-import { Title } from '@/components/shared/title';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/shared/lib/utils';
+import { PizzaImage } from '@/shared/components/shared/pizza-image';
+import { Title } from '@/shared/components/shared/title';
+import { Button } from '@/shared/components/ui/button';
 
 interface Props {
   imageUrl: string;
   name: string;
-  ingredients: any[];
-  items?: any[];
   onClickAdd?: VoidFunction;
   className?: string;
 }
 
-export const ChooseProductForm: React.FC<Props> = ({
-  name,
-  items,
-  imageUrl,
-  ingredients,
-  onClickAdd,
-  className,
-}) => {
+export const ChooseProductForm: React.FC<Props> = ({ name, imageUrl, onClickAdd, className }) => {
   const textDetails = '30 см, традиционное тесто';
   const totalPrice = 350;
 

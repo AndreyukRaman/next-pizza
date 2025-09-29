@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
-import { cn } from '@/lib/utils';
-import { Title } from '@/components/shared/title';
-import { Input } from '@/components/ui/input';
-import { RangeSlider } from '@/components/shared/range-slider';
-import { CheckboxFiltersGroup } from '@/components/shared/checkbox-filters-group';
-import { useFilters } from '@/hooks/use-filters';
-import { useIngredients } from '@/hooks/use-ingredients';
-import { useQueryFilters } from '@/hooks/use-query-filters';
+import { cn } from '@/shared/lib/utils';
+import { Title } from '@/shared/components/shared/title';
+import { Input } from '@/shared/components/ui/input';
+import { RangeSlider } from '@/shared/components/shared/range-slider';
+import { CheckboxFiltersGroup } from '@/shared/components/shared/checkbox-filters-group';
+import { useFilters } from '@/shared/hooks/use-filters';
+import { useIngredients } from '@/shared/hooks/use-ingredients';
+import { useQueryFilters } from '@/shared/hooks/use-query-filters';
 
 interface Props {
   className?: string;
