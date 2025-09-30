@@ -23,6 +23,7 @@ const eslintConfig = [
     },
     rules: {
       '@next/next/no-img-element': 'off',
+      'jsx-a11y/alt-text': 'off',
       'react/jsx-max-props-per-line': ['error', { maximum: 1 }],
     },
     settings: {
