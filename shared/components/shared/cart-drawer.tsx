@@ -12,7 +12,7 @@ import {
 import Link from 'next/link';
 import { Button } from '@/shared/components/ui/button';
 import { ArrowRight } from 'lucide-react';
-import { CartDriwerItem } from '@/shared/components/shared/cart-driwer-item';
+import { CartDrawerItem } from '@/shared/components/shared/cart-drawer-item';
 import { getCartItemDetails } from '@/shared/lib/get-cart-item-details';
 import { useCartStore } from '@/shared/store/cart';
 import { PizzaSize, PizzaType } from '@/shared/constants/pizza';
@@ -46,7 +46,7 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
         </SheetHeader>
 
         {items.map((item) => (
-          <CartDriwerItem
+          <CartDrawerItem
             key={item.id}
             id={item.id}
             imageUrl={item.image_url}

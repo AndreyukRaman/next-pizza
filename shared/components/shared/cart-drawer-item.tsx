@@ -10,7 +10,7 @@ interface Props extends CartItemProps {
   className?: string;
 }
 
-export const CartDriwerItem: React.FC<Props> = ({
+export const CartDrawerItem: React.FC<Props> = ({
   id,
   imageUrl,
   name,
