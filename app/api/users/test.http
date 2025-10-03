@@ -1,10 +1,14 @@
-POST http://localhost:3000/api/users
+PATCH http://localhost:3000/api/cart/1
 Content-Type: application/json
+Cookie: cartToken=11111
+#{
+#  "fullName": "Roma Andreyuk",
+#  "email": "Roma@example.com",
+#  "password": "5510515318"
+#
+#}
+#
 
 {
-  "fullName": "Roma Andreyuk",
-  "email": "Roma@example.com",
-  "password": "5510515318"
-
+  "quantity": 5
 }
-
