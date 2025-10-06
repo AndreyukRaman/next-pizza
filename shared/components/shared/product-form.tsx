@@ -9,7 +9,7 @@ import { ChooseProductForm } from '@/shared/components/shared/choose-product-for
 
 interface Props {
   product: ProductWithRelations;
-  onSubmit: VoidFunction;
+  onSubmit?: VoidFunction;
   className?: string;
 }
 
