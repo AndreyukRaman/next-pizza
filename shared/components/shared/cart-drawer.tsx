@@ -15,31 +15,16 @@ import { Button } from '@/shared/components/ui/button';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { CartDrawerItem } from '@/shared/components/shared/cart-drawer-item';
 import { getCartItemDetails } from '@/shared/lib/get-cart-item-details';
-import { useCartStore } from '@/shared/store/cart';
+
 import { PizzaSize, PizzaType } from '@/shared/constants/pizza';
 import Image from 'next/image';
 import { Title } from '@/shared/components/shared/title';
 import { cn } from '@/shared/lib/utils';
+import { useCart } from '@/shared/hooks/use-cart';
 
-interface Props {
-  className?: string;
-}
-
-export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children, className }) => {
-  // const [totalAmount, fetchCartItems, items] = useCartStore((state) => [
-  //   state.totalAmount,
-  //   state.fetchCartItems,
-  //   state.items,
-  // ]); в новых версиях не работает т к селектор возвращает новый массив на каждом рендере
-  const totalAmount = useCartStore((state) => state.totalAmount);
-  const fetchCartItems = useCartStore((state) => state.fetchCartItems);
-  const items = useCartStore((state) => state.items);
-  const updateItemQuantity = useCartStore((state) => state.updateItemQuantity);
-  const removeCartItem = useCartStore((state) => state.removeCartItem);
-
-  React.useEffect(() => {
-    fetchCartItems();
-  }, []);
+export const CartDrawer: React.FC<React.PropsWithChildren> = ({ children }) => {
+  const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart();
+  const [redirecting, setRedirecting] = React.useState(false);
 
   const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
     const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1;
@@ -83,15 +68,11 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
                   key={item.id}
                   id={item.id}
                   imageUrl={item.image_url}
-                  details={
-                    item.pizzaSize && item.pizzaType
-                      ? getCartItemDetails(
-                          item.ingredients,
-                          item.pizzaType as PizzaType,
-                          item.pizzaSize as PizzaSize,
-                        )
-                      : ''
-                  }
+                  details={getCartItemDetails(
+                    item.ingredients,
+                    item.pizzaType as PizzaType,
+                    item.pizzaSize as PizzaSize,
+                  )}
                   disabled={item.disabled}
                   name={item.name}
                   price={item.price}
@@ -110,8 +91,13 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
                     </span>
                     <span className="font-bold text-lg">{totalAmount} Р</span>
                   </div>
-                  <Link href="/cart">
-                    <Button type="submit" className="w-full h-12 text-base">
+                  <Link href="/checkout">
+                    <Button
+                      onClick={() => setRedirecting(true)}
+                      loading={redirecting}
+                      type="submit"
+                      className="w-full h-12 text-base"
+                    >
                       Оформить заказ
                       <ArrowRight className="w-5 ml-2" />
                     </Button>
