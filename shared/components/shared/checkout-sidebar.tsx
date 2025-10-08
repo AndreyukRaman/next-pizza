@@ -3,16 +3,18 @@ import { CheckoutItemDetails } from '@/shared/components/shared/checkout-item-de
 import { ArrowRight, Package, Percent, Truck } from 'lucide-react';
 import { Button } from '@/shared/components/ui/button';
 import { WhiteBlock } from '@/shared/components/shared/white-block';
+import { Skeleton } from '@/shared/components/ui/skeleton';
 
 const VAT = 15;
 const DELIVERY_PRICE = 250;
 
 interface Props {
   totalAmount: number;
+  loading?: boolean;
   className?: string;
 }
 
-export const CheckoutSidebar: React.FC<Props> = ({ totalAmount, className }) => {
+export const CheckoutSidebar: React.FC<Props> = ({ totalAmount, loading, className }) => {
   const vatPrice = (totalAmount * VAT) / 100;
   const totalPrice = totalAmount + vatPrice + DELIVERY_PRICE;
 
@@ -20,7 +22,11 @@ export const CheckoutSidebar: React.FC<Props> = ({ totalAmount, className }) => 
     <WhiteBlock className="p-6 sticky top-4">
       <div className="flex flex-col gap-1">
         <span className="text-xl">Итого:</span>
-        <span className="text-[34px] font-extrabold">{totalPrice} P</span>
+        {loading ? (
+          <Skeleton className="w-48 h-11" />
+        ) : (
+          <span className=" h-11 text-[34px] font-extrabold">{totalPrice} P</span>
+        )}
       </div>
       <CheckoutItemDetails
         title={
@@ -29,7 +35,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ totalAmount, className }) => 
             Стоимость корзины:
           </div>
         }
-        value={`${totalAmount} P`}
+        value={loading ? <Skeleton className="w-16 h-6" /> : `${totalAmount} P`}
       />
       <CheckoutItemDetails
         title={
@@ -38,7 +44,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ totalAmount, className }) => 
             Налоги:
           </div>
         }
-        value={`${vatPrice} P`}
+        value={loading ? <Skeleton className="w-16 h-6" /> : `${vatPrice} P`}
       />
       <CheckoutItemDetails
         title={
@@ -47,7 +53,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ totalAmount, className }) => 
             Доставка:
           </div>
         }
-        value={`${DELIVERY_PRICE} P`}
+        value={loading ? <Skeleton className="w-16 h-6" /> : `${DELIVERY_PRICE} P`}
       />
       <Button
         type="submit"
