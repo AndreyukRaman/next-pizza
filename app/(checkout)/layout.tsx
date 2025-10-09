@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { Header } from '@/shared/components/shared/header';
 import { Container } from '@/shared/components/shared/container';
+import React from 'react';
 
 export const metadata: Metadata = {
   title: 'Next Pizza | Корзина',
