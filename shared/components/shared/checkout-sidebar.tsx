@@ -11,6 +11,7 @@ const DELIVERY_PRICE = 250;
 interface Props {
   totalAmount: number;
   loading?: boolean;
+  submitting?: boolean;
   className?: string;
 }
 
@@ -56,8 +57,8 @@ export const CheckoutSidebar: React.FC<Props> = ({ totalAmount, loading, classNa
         value={loading ? <Skeleton className="w-16 h-6" /> : `${DELIVERY_PRICE} P`}
       />
       <Button
+        loading={loading}
         type="submit"
-        // disabled={!totalAmount || submitting}
         className="w-full h-14 rounded-2xl mt-6 text-base font-bold"
       >
         Перейти к оплате

@@ -13,8 +13,12 @@ import {
   checkoutFormSchema,
   CheckoutFormValues,
 } from '@/shared/components/shared/checkout/checkout-form-schema';
+import { createOrder } from '@/app/actions';
+import toast from 'react-hot-toast';
+import React from 'react';
 
 export default function CheckoutPage() {
+  const [submitting, setSubmitting] = React.useState(false);
   const { totalAmount, items, updateItemQuantity, removeCartItem, loading } = useCart();
 
   const form = useForm<CheckoutFormValues>({
@@ -29,8 +33,22 @@ export default function CheckoutPage() {
     },
   });
 
-  const onSubmit = (data: CheckoutFormValues) => {
-    console.log(data);
+  const onSubmit = async (data: CheckoutFormValues) => {
+    try {
+      setSubmitting(true);
+      const url = await createOrder(data);
+      console.log('Returned URL:', url);
+
+      toast.error('Order successfully created! Redirect for payment...', { icon: '✅' });
+
+      if (url) {
+        location.href = url;
+      }
+    } catch (err) {
+      console.log(err);
+      setSubmitting(false);
+      toast.error('Unable to create order ', { icon: '❌' });
+    }
   };
 
   const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
@@ -55,7 +73,7 @@ export default function CheckoutPage() {
               <CheckoutAddressForm className={loading ? 'opacity-40 pointer-events-none' : ''} />
             </div>
             <div className="w-[450px]">
-              <CheckoutSidebar totalAmount={totalAmount} loading={loading} />
+              <CheckoutSidebar totalAmount={totalAmount} loading={loading || submitting} />
             </div>
           </div>
         </form>
