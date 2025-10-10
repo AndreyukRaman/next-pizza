@@ -6,6 +6,7 @@ import { OrderStatus } from '@prisma/client';
 import { cookies } from 'next/headers';
 import { sendEmail } from '@/shared/lib/send-email';
 import { renderPayOrderTemplate } from '@/shared/lib/render-email';
+import { createPayment } from '@/shared/lib/create-payment';
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -74,18 +75,31 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
-    //   TODO: create URL for payment
-    const paymentUrl = 'https://justjoin.it/';
+    /* Creating Stripe Checkout Session */
+    const session = await createPayment({
+      amount: order.totalAmount, // for example 49.99
+      orderId: order.id,
+      description: `Payment order #${order.id}`,
+      currency: 'pln',
+    });
 
-    const html = await renderPayOrderTemplate(order.id, order.totalAmount, paymentUrl);
+    if (!session || !session.url) throw new Error('Payment session not created');
 
+    /* Saving paymentId into order */
+    await prisma.order.update({
+      where: { id: order.id },
+      data: { paymentId: session.id },
+    });
+
+    /* Sending mail with payment link */
+    const html = await renderPayOrderTemplate(order.id, order.totalAmount, session.url);
     await sendEmail(
       data.email,
       `Next Pizza / Оплатите заказ #${order.id}`,
-      html, // теперь это строка с HTML
+      html, // now its HTML not JSX
     );
 
-    return paymentUrl;
+    return session.url;
   } catch (err) {
     console.log('[Create order] Server error', err);
   }
