@@ -49,7 +49,7 @@ export const authOptions = {
           return null;
         }
         return {
-          id: String(findUser.id),
+          id: findUser.id,
           email: findUser.email,
           name: findUser.name,
           role: findUser.role,
@@ -114,6 +114,10 @@ export const authOptions = {
       }
     },
     async jwt({ token }) {
+      if (!token.email) {
+        return token;
+      }
+
       const findUser = await prisma.user.findFirst({
         where: {
           email: token.email,

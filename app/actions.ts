@@ -2,11 +2,13 @@
 
 import { CheckoutFormValues } from '@/shared/components/shared/checkout/checkout-form-schema';
 import { prisma } from '@/prisma/prisma-client';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus, Prisma } from '@prisma/client';
 import { cookies } from 'next/headers';
 import { sendEmail } from '@/shared/lib/send-email';
 import { renderPayOrderTemplate } from '@/shared/lib/render-email';
 import { createPayment } from '@/shared/lib/create-payment';
+import { getUserSession } from '@/shared/lib/get-user-session';
+import { hashSync } from 'bcrypt';
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -102,5 +104,35 @@ export async function createOrder(data: CheckoutFormValues) {
     return session.url;
   } catch (err) {
     console.log('[Create order] Server error', err);
+  }
+}
+
+export async function updateUserInfo(body: Prisma.UserUpdateInput) {
+  try {
+    const currentUser = await getUserSession();
+
+    if (!currentUser) {
+      throw new Error('Пользователь не найден');
+    }
+
+    const findUser = await prisma.user.findFirst({
+      where: {
+        id: Number(currentUser.id),
+      },
+    });
+
+    await prisma.user.update({
+      where: {
+        id: Number(currentUser.id),
+      },
+      data: {
+        fullName: body.fullName,
+        email: body.email,
+        password: body.password ? hashSync(body.password as string, 10) : findUser?.password,
+      },
+    });
+  } catch (err) {
+    console.log('Error [UPDATE_USER]', err);
+    throw err;
   }
 }
