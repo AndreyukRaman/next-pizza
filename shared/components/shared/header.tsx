@@ -4,13 +4,13 @@ import React from 'react';
 import { cn } from '@/shared/lib/utils';
 import { Container } from '@/shared/components/shared/container';
 import Image from 'next/image';
-import { Button } from '@/shared/components/ui/button';
-import { User } from 'lucide-react';
 import Link from 'next/link';
 import { SearchInput } from '@/shared/components/shared/search-input';
 import { CartButton } from '@/shared/components/shared/cart-button';
 import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import { ProfileButton } from '@/shared/components/shared/profile-button';
 
 interface Props {
   hasSearch?: boolean;
@@ -19,7 +19,10 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, className }) => {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
+
+  console.log(session, 999);
   React.useEffect(() => {
     if (searchParams.has('paid')) {
       toast.success('Order successfully payed! Details sent to email');
@@ -47,10 +50,7 @@ export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, clas
 
         {/* Правая часть */}
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="flex items-center gap-1">
-            <User size={16} />
-            Войти
-          </Button>
+          <ProfileButton />
           {hasCart && <CartButton />}
         </div>
       </Container>
