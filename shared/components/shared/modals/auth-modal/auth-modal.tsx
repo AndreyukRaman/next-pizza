@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogTitle } from '@/shared/components/ui/dialo
 import { Button } from '@/shared/components/ui/button';
 import { LoginForm } from '@/shared/components/shared/modals/auth-modal/forms/login-form';
 import { signIn } from 'next-auth/react';
+import { RegisterForm } from '@/shared/components/shared/modals/auth-modal/forms/register-form';
 
 interface Props {
   open: boolean;
@@ -13,7 +14,7 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
   const [type, setType] = React.useState<'login' | 'register'>('login');
 
   const onSwitchType = () => {
-    setType(type === 'login' ? 'login' : 'register');
+    setType(type === 'login' ? 'register' : 'login');
   };
 
   const handleClose = () => {
@@ -24,7 +25,11 @@ export const AuthModal: React.FC<Props> = ({ open, onClose }) => {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="w-[450px] bg-white p-10">
         <DialogTitle className="sr-only">Login form</DialogTitle>
-        {type === 'login' ? <LoginForm onClose={handleClose} /> : <h1>REGISTER</h1>}
+        {type === 'login' ? (
+          <LoginForm onClose={handleClose} />
+        ) : (
+          <RegisterForm onClose={handleClose} />
+        )}
         <hr />
         <div className="flex gap-2">
           <Button

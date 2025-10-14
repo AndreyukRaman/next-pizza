@@ -7,9 +7,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { SearchInput } from '@/shared/components/shared/search-input';
 import { CartButton } from '@/shared/components/shared/cart-button';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
-import { useSession } from 'next-auth/react';
 import { ProfileButton } from '@/shared/components/shared/profile-button';
 import { AuthModal } from '@/shared/components/shared/modals/auth-modal/auth-modal';
 
@@ -21,15 +20,30 @@ interface Props {
 
 export const Header: React.FC<Props> = ({ hasSearch = true, hasCart = true, className }) => {
   const [openAuthModal, setOpenAuthModal] = React.useState(false);
-  const { data: session } = useSession();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
-  console.log(session, 999);
   React.useEffect(() => {
+    let toastMessage = '';
+
     if (searchParams.has('paid')) {
-      toast.success('Order successfully payed! Details sent to email');
+      toastMessage = 'Заказ успешно оплачен! Информация отправлена на почту.';
+    }
+
+    if (searchParams.has('verified')) {
+      toastMessage = 'Почта успешно подтверждена!';
+    }
+
+    if (toastMessage) {
+      setTimeout(() => {
+        router.replace('/');
+        toast.success(toastMessage, {
+          duration: 3000,
+        });
+      }, 1000);
     }
   }, []);
+
   return (
     <header className={cn('border-b', className)}>
       <Container className="flex items-center justify-between py-8">
