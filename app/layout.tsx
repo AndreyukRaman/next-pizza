@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <Script
-          src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyCgeCl0KZ2TK_32eDrvdjpY2mexhHdiS2M&libraries=places&language=en`}
+          src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyCXM3-ee2I5-xdYv1ibW1gR3Y6THPaugAY&libraries=places&language=en`}
           strategy="afterInteractive"
         />
         <link data-rh="true" rel="icon" href="/logo.png" />

@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/prisma/prisma-client';
 import { updateCartTotalAmount } from '@/shared/lib/update-cart-total-amount';
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = Number(params.id);
+    const { id } = await params;
+    const numericId = Number(id);
+
     const data = (await req.json()) as { quantity: number };
     const token = req.cookies.get('cartToken')?.value;
 
@@ -13,9 +15,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     const cartItem = await prisma.cartItem.findFirst({
-      where: {
-        id,
-      },
+      where: { id: numericId },
     });
 
     if (!cartItem) {
@@ -23,12 +23,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     }
 
     await prisma.cartItem.update({
-      where: {
-        id,
-      },
-      data: {
-        quantity: data.quantity,
-      },
+      where: { id: numericId },
+      data: { quantity: data.quantity },
     });
 
     const updatedUserCart = await updateCartTotalAmount(token);
@@ -39,11 +35,11 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-export const runtime = 'nodejs'; // 👈 фиксируем runtime, чтобы params были синхронными
-
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const id = Number(params.id); // работает синхронно
+    const { id } = await params; // Тоже важно
+    const numericId = Number(id);
+
     const token = req.cookies.get('cartToken')?.value;
 
     if (!token) {
@@ -51,14 +47,16 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     }
 
     const cartItem = await prisma.cartItem.findFirst({
-      where: { id },
+      where: { id: numericId },
     });
 
     if (!cartItem) {
       return NextResponse.json({ error: 'Cart item not found' });
     }
 
-    await prisma.cartItem.delete({ where: { id } });
+    await prisma.cartItem.delete({
+      where: { id: numericId },
+    });
 
     const updatedUserCart = await updateCartTotalAmount(token);
     return NextResponse.json(updatedUserCart);
@@ -67,3 +65,5 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return NextResponse.json({ message: 'Не удалось удалить корзину' }, { status: 500 });
   }
 }
+
+export const runtime = 'nodejs';
